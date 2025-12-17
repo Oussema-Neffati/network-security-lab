@@ -19,12 +19,12 @@ Demonstrate how ARP cache poisoning can redirect traffic through an attacker, en
 ### Kali Linux (Attacker)
 Static IP configuration:
 
-![Kali IP Config](../images/kali-ip-config.png)
+![Kali IP Config](../../images/kali-ip-config.png)
 
 ### Metasploitable (Victim)
 Static IP configuration:
 
-![Metasploitable IP Config](../images/metasploitable-ip-config.png)
+![Metasploitable IP Config](../../images/metasploitable-ip-config.png)
 
 Both machines are on the same subnet, which is required for ARP spoofing.
 
