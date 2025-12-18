@@ -14,10 +14,10 @@ Demonstrate how ARP cache poisoning can redirect traffic through an attacker, en
 The attacker and victim both have static IPs and live on the same subnet. This is necessary for ARP spoofing.
 
 Kali IP config image:
-! [Kali IP Config]((../images/kali-ip-config.png))
+! [Kali IP Config](../images/kali-ip-config.png)
 
 Metasploitable IP config image:
-! [Metasploitable IP Config]((../images/metasploitable-ip-config.png))
+! [Metasploitable IP Config](../images/metasploitable-ip-config.png)
 
 ## 4. Connectivity Tests
 
@@ -29,7 +29,7 @@ ping 192.168.43.1
 ```
 
 Ping output image:
-! [Ping Output]((../images/ping-arp-before.png))
+! [Ping Output](../images/ping-arp-before.png)
 
 - Connectivity is normal
 - No packet loss
@@ -44,7 +44,7 @@ arp -a
 ```
 
 Expected output image:
-! [ARP Table Before]((../images/arp-before.png))
+! [ARP Table Before](../images/arp-before.png)
 
 - Each IP is mapped to its legitimate MAC address
 - No spoofing detected yet
@@ -68,7 +68,7 @@ sudo arpspoof -t 192.168.43.22 192.168.43.1
 
 
 Execution output image:
-! [ARP Spoofing Execution]((../images/arp-attack.png))
+! [ARP Spoofing Execution](../images/arp-attack.png)
 
 - Kali repeatedly sends forged ARP replies
 + The victim and gateway now believe Kali's MAC belong to each other
@@ -83,7 +83,7 @@ On the victim:
 arp -a
 ```
 
-! [ARP Table After]((../images/arp-after.png))
+! [ARP Table After](../images/arp-after.png)
 
 - The gateway IP (192.168.43.1) now resolves to Kali's MAC
 - This confirms successful ARP poisoning
